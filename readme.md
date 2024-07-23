@@ -355,35 +355,3 @@ Will return Short Video list in Json Array format.
 1. Only return short video from suggestion.
 2. inlinePlaybackEndpoint facing async issue.
 3. Only return first page of short video.
-
-### Docker:
-[Docker Image](https://hub.docker.com/r/damonwong/youtube-search-api-docker)
-
-## Message
-
-If you want to work with me to fix bug or implement new idea. You are available to send me some new idea of this project.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## TODO
-
-1. Web app with show case
-2. Typescript version (Contributor is working on)
-
-## Bug fixed
-
-## Update
-
-1. Search for shorts (Limitation)
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-## Support me
-
-https://www.buymeacoffee.com/damonwcw
