@@ -7,20 +7,20 @@
 > Run
 
 ```html
- apt install nodejs npm -y && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && source ~/.bashrc && nvm install v22.5.1 && apt install docker.io -y && apt install git && git clone https://github.com/hendramla/heeN-yt.git heeN-yt && cd heeN-yt && npm install && npm audit fix && docker build -t heeN-yt . && docker run -d --restart=always -p 9090:9090 --name heeN heeN-yt && systemctl enable docker
+ apt install nodejs npm -y && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && source ~/.bashrc && nvm install v22.5.1 && apt install docker.io -y && apt install git && git clone https://github.com/hendramla/heen-yt.git heen-yt && cd heen-yt && npm install && npm audit fix && docker build -t heen-yt . && docker run -d --restart=always -p 9090:9090 --name heen heen-yt && systemctl enable docker
 ```
 # Stop & Remove Docker
 > Stop
 ```html
- docker stop heeN
+ docker stop heen
  ```
 > Remove
 ```html
- docker rm heeN
+ docker rm heen
  ```
 > Start New Docker
 ```html
- docker run -d --restart=always -p 9090:9090 --name heeN heeN-yt
+ docker run -d --restart=always -p 9090:9090 --name heen heen-yt
  ```
 # Youtube Search API
 
