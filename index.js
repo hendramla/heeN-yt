@@ -47,11 +47,12 @@ app.get('/', function (req, res) {
       '/api/learning': 'Educational video and posts',
       '/api/fashion': 'Fashion page video and posts',
       '/api/channels': 'Browse Channels',
-      '/api//playlist/:id': 'Get Playlist By an ID',
+      '/api/playlist/:id': 'Get Playlist By an ID',
       '/api/channel/:id': 'Get channel by an ID',
       '/api/watch/:id': 'Video details and comments with replies',
       '/api/watch/:id/comments': 'Load more comments',
       '/api/watch/:id/suggestions': 'Load more video suggestions',
+      '/api/related/:id': 'Get video related Watch',
       '/api/search': 'Search videos',
     }
   })
