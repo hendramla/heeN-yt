@@ -626,12 +626,88 @@ export const GetVideoDetails = async (videoId) => {
             publishedAt: isLive ? videoInfo?.dateText?.simpleText : videoInfo?.relativeDateText?.simpleText,
             description: player.shortDescription ?? channelInfo.attributedDescription.content,
             channel,
-            player,
+        }
+
+        return await Promise.resolve(res);
+    } catch (ex) {
+        return await Promise.reject(ex);
+    }
+};
+
+
+export const GetVideoRelated = async (videoId) => {
+    const endpoint = `${youtubeEndpoint}/watch?v=${videoId}`;
+    try {
+        const page = await GetYoutubeInitData(endpoint);
+
+        const result = await page.initData.contents.twoColumnWatchNextResults;
+        const playerData = await page.playerData;
+
+        let videoInfo = null, channelInfo = null, contToken = null;
+
+        await result.results.results.contents.forEach((content) => {
+            if (content.itemSectionRenderer?.contents[0].continuationItemRenderer) {
+                contToken = content.itemSectionRenderer?.contents[0].continuationItemRenderer
+                    .continuationEndpoint.continuationCommand.token;
+            } else if (content.videoPrimaryInfoRenderer) {
+                videoInfo = content.videoPrimaryInfoRenderer;
+            } else if (content.videoSecondaryInfoRenderer) {
+                channelInfo = content.videoSecondaryInfoRenderer;
+            }
+        });
+        const apiToken = await page.apiToken;
+        const context = await page.context;
+        const nextPageContext = { context: context, continuation: contToken };
+
+        const nextPage = { nextPageToken: apiToken, nextPageContext: nextPageContext }
+
+        let isLive = false;
+        if (videoInfo?.viewCount?.videoViewCountRenderer?.hasOwnProperty("isLive")) {
+            isLive = true;
+        }
+
+
+        const likeContainer = videoInfo?.videoActions?.menuRenderer?.topLevelButtons[0]?.segmentedLikeDislikeButtonViewModel;
+
+        const likeCount = likeContainer?.likeButtonViewModel?.likeButtonViewModel?.toggleButtonViewModel?.toggleButtonViewModel?.defaultButtonViewModel?.buttonViewModel?.title ||
+            0;
+
+        const viewCount = isLive ? videoInfo?.viewCount?.videoViewCountRenderer?.viewCount?.runs?.map((x) => x.text).join('') :
+            videoInfo?.viewCount?.videoViewCountRenderer?.shortViewCount?.simpleText || videoInfo?.viewCount?.videoViewCountRenderer?.extraShortViewCount?.simpleText || 0;
+
+        const suggestionList = [];
+        let suggestionToken = null;
+
+        const suggestionListContainer = result.secondaryResults.secondaryResults.results;
+
+        for (const conitem of suggestionListContainer) {
+
+            if (conitem.compactVideoRenderer) {
+                suggestionList.push(compactVideoRenderer(conitem));
+            } else if (conitem.continuationItemRenderer) {
+                suggestionToken = conitem.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+            }
+
+        }
+
+        const suggestionContext = { context: context, continuation: suggestionToken };
+
+        const suggestionNextPage = { nextPageToken: apiToken, nextPageContext: suggestionContext }
+
+        const channelUrl = channelInfo.owner.videoOwnerRenderer.navigationEndpoint.commandMetadata.webCommandMetadata.url;
+
+        const channel = {
+            id: channelUrl ? channelUrl?.replace('/@', '') : '',
+            title: channelInfo.owner.videoOwnerRenderer.title.runs[0].text,
+            url: channelUrl ? channelUrl?.replace('/@', '/channel/') : '',
+            subscriber: channelInfo.owner.videoOwnerRenderer.subscriberCountText.simpleText,
+            avatar: channelInfo.owner.videoOwnerRenderer.thumbnail.thumbnails,
+        }
+
+        const player = getVideoData(playerData);
+
+        const res = {
             suggestion: suggestionList,
-            suggestionContext: suggestionNextPage,
-            isLive,
-            commentContext: nextPage,
-            comments: await getComments(nextPage) ?? [],
         }
 
         return await Promise.resolve(res);
