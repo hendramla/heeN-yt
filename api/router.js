@@ -4,6 +4,7 @@ import {
   GetListByKeyword,
   GetChannelById,
   GetVideoDetails,
+  GetVideoRelated,
   getAutoCompleteSearch,
   getMoreComments,
   getMoreSuggestions,
@@ -83,13 +84,28 @@ apiRouter.get('/search', async function (req, res, next) {
 });
 
 /**
- * Get Video details with suggestions
+ * Get Video details
  */
 apiRouter.get('/watch/:id', async function (req, res, next) {
   const videoId = req.params.id;
 
   try {
     const video = await GetVideoDetails(videoId);
+
+    return res.status(200).json(video);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * Get Video Related
+ */
+apiRouter.get('/related/:id', async function (req, res, next) {
+  const videoId = req.params.id;
+
+  try {
+    const video = await GetVideoRelated(videoId);
 
     return res.status(200).json(video);
   } catch (error) {
