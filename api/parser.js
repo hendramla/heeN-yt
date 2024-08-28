@@ -119,16 +119,10 @@ export const GetListByKeyword = async (
         const sectionListRenderer = await page.initData.contents
             .twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer;
 
-        let contToken = {};
-
         let items = [];
 
         await sectionListRenderer.contents.forEach((content) => {
-            if (content.continuationItemRenderer) {
-                contToken =
-                    content.continuationItemRenderer.continuationEndpoint
-                        .continuationCommand.token;
-            } else if (content.itemSectionRenderer) {
+            if (content.itemSectionRenderer) {
                 content.itemSectionRenderer.contents.forEach((item) => {
                     
                     let videoRender = item.videoRenderer;
@@ -142,13 +136,9 @@ export const GetListByKeyword = async (
 
         const itemList = items.filter((x) => x.id != null)
 
-        const apiToken = await page.apiToken;
-        const context = await page.context;
-        const nextPageContext = { context: context, continuation: contToken };
         const itemsResult = itemList != 0 ? itemList.slice(0, limit) : itemList;
         return await Promise.resolve({
-            items: itemsResult,
-            nextPage: { nextPageToken: apiToken, nextPageContext: nextPageContext }
+            items: itemsResult
         });
     } catch (ex) {
         console.error(ex);
