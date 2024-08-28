@@ -130,30 +130,11 @@ export const GetListByKeyword = async (
                         .continuationCommand.token;
             } else if (content.itemSectionRenderer) {
                 content.itemSectionRenderer.contents.forEach((item) => {
-                    if (item.channelRenderer) {
-                        let channelRenderer = item.channelRenderer;
-                        items.push(parseChannelRender(channelRenderer));
-                    } else {
-                        let videoRender = item.videoRenderer;
-                        let playListRender = item.playlistRenderer;
-
-                        if (videoRender && videoRender.videoId) {
+                    
+                    let videoRender = item.videoRenderer;
+                    
+                    if (videoRender && videoRender.videoId) {
                             items.push(parseVideoRender(videoRender));
-                        }
-                        if (withPlaylist) {
-                            if (playListRender && playListRender.playlistId) {
-                                items.push({
-                                    id: playListRender.playlistId,
-                                    type: "playlist",
-                                    thumbnail: playListRender.thumbnails,
-                                    title: playListRender.title.simpleText,
-                                    length: playListRender.videoCount,
-                                    videos: playListRender.videos,
-                                    videoCount: playListRender.videoCount,
-                                    isLive: false
-                                });
-                            }
-                        }
                     }
                 });
             }
